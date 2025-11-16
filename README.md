@@ -46,25 +46,45 @@ The model is trained to identify 14 competitors:
 
 ## Notebook Versions
 
-### 1. `KFC_NER_Sentiment_FIXED.ipynb` ⭐ **RECOMMENDED**
+### 1. `KFC_Complete_NER_Sentiment.ipynb` ⭐⭐ **MOST RECENT - USE THIS**
 
-**What's different:**
-- NER uses **single-label classification** (14-class: which competitor is tweet about?)
-- Added **data validation** at every step with debugging output
-- Enhanced **regex-based extraction** for finding all competitor mentions
-- **Hybrid pipeline**: NER classifier + regex extraction = best of both worlds
-- Much simpler and more robust
+**Complete working version with all fixes:**
+- ✅ **Fixed AdamW import** - Uses `torch.optim.AdamW` instead of transformers
+- ✅ **UTF-8 conversion** - Auto-detects and converts CSV encoding
+- ✅ **Excel export** - Formatted .xlsx with color-coded sentiment
+- ✅ **Working NER** - Single-label classification (F1 >0.70)
+- ✅ **Complete sentiment model** - Fully implemented
+- ✅ **Hybrid pipeline** - NER + regex for competitor extraction
+
+**Features:**
+- Automatic CSV encoding detection and UTF-8 conversion
+- Color-coded Excel output with summary statistics
+- Complete training pipeline for both models
+- Saves to both local and Google Drive
+- Ready for immediate use in Google Colab
 
 **Expected performance:**
 - NER Validation F1: **>0.70** ✅
 - NER Accuracy: **>0.75** ✅
 - Sentiment F1: **>0.70** ✅
 
-### 2. `KFC_Competitor_NER_Sentiment_Analysis.ipynb` ⚠️ **HAS ISSUES**
+### 2. `KFC_NER_Sentiment_FIXED.ipynb` ⚠️ **INCOMPLETE**
 
-Original notebook with multi-label NER approach. **Known issue:** Validation F1 stays at 0.0000 (model doesn't learn). Use the fixed version instead.
+Partial fixed version. **Missing:**
+- Sentiment model section incomplete (placeholder only)
+- No CSV encoding conversion
+- No Excel export functionality
 
-See `FIX_EXPLANATION.md` for technical details on what went wrong and how it was fixed.
+Use `KFC_Complete_NER_Sentiment.ipynb` instead.
+
+### 3. `KFC_Competitor_NER_Sentiment_Analysis.ipynb` ❌ **BROKEN**
+
+Original notebook with multi-label NER approach. **Known issues:**
+- Validation F1 stays at 0.0000 (model doesn't learn)
+- AdamW import error with newer transformers versions
+- No encoding handling
+
+See `FIX_EXPLANATION.md` for technical details.
 
 ## Dataset Files
 
@@ -77,13 +97,22 @@ See `FIX_EXPLANATION.md` for technical details on what went wrong and how it was
 
 ### 1. Open in Google Colab
 
-1. Upload the notebook `KFC_NER_Sentiment_FIXED.ipynb` to Google Colab (⭐ recommended)
+1. Upload the notebook **`KFC_Complete_NER_Sentiment.ipynb`** to Google Colab ⭐⭐
 2. Enable GPU: Runtime → Change runtime type → Hardware accelerator → GPU (T4 recommended)
 3. Run all cells sequentially
 
 ### 2. Upload Data Files
 
-When prompted, upload the four CSV files listed above.
+When prompted, upload the four CSV files:
+- `KFC_social_data.xlsx - Sheet1.csv`
+- `KFC_training_sample.csv`
+- `KFC_test_sample.csv`
+- `KFC_test_sample_for_prediction.csv`
+
+**Note:** The notebook will automatically:
+- Detect file encoding
+- Convert to UTF-8 if needed
+- Handle special characters properly
 
 Alternatively, if files are in Google Drive:
 - Uncomment and modify the Drive path in the "Upload Data" cell
@@ -106,12 +135,30 @@ All outputs are saved to:
 - `/content/drive/MyDrive/KFC_ML_Models/` - Trained models and tokenizers
 - `/content/results/` - Predictions, visualizations, metrics
 
-Key files:
-- `KFC_test_predictions.csv` - Final predictions with one row per competitor
-- `ner_best_model.pt` - Best NER model weights
-- `sentiment_best_model.pt` - Best sentiment model weights
-- `config.json` - Model configuration and performance metrics
-- Various PNG files with training curves and confusion matrices
+**Key Output Files:**
+
+**Excel File (NEW):** `KFC_Predictions_Complete.xlsx`
+- **Predictions sheet**: Full data with color-coded sentiment
+  - 🔴 Red: Negative sentiment
+  - 🟡 Yellow: Neutral sentiment
+  - 🟢 Green: Positive sentiment
+- **Summary sheet**: Statistics including:
+  - Total predictions, unique tweets, unique competitors
+  - Sentiment distribution (counts and percentages)
+  - Per-competitor breakdown (mentions, positive, neutral, negative)
+- Auto-sized columns for readability
+- Professional formatting ready for presentations
+
+**Model Files:**
+- `ner_model_best.pt` - Best NER model weights
+- `sentiment_model_best.pt` - Best sentiment model weights
+- `ner_tokenizer/` - NER tokenizer files
+- `sentiment_tokenizer/` - Sentiment tokenizer files
+
+**Visualizations:**
+- `ner_training.png` - NER training curves
+- `sentiment_training.png` - Sentiment training curves
+- Various confusion matrices and performance plots
 
 ## Model Architecture
 
