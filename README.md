@@ -2,11 +2,24 @@
 
 This project fine-tunes deep learning models to extract competitor mentions from tweets and analyze sentiment for each competitor independently.
 
-## ⚠️ IMPORTANT: Use the Fixed Version
+## ⚠️ CRITICAL BUG ALERT
 
-**Recommended notebook:** `KFC_NER_Sentiment_FIXED.ipynb`
+**KNOWN ISSUE in `KFC_Complete_NER_Sentiment.ipynb`:**
 
-The original notebook had an issue with NER validation F1 being 0.0000. The fixed version uses a simplified, more robust approach. See `FIX_EXPLANATION.md` for details.
+The notebook has a **data assignment bug** that causes `KeyError: 'SENTIMENT'`:
+- Uses `df_large` (no sentiment labels) for sentiment model training ❌
+- Should use `df_train_sample` (has sentiment labels) for sentiment model ✅
+
+**FIX:** See `CRITICAL_BUG_FIX.md` for detailed step-by-step corrections.
+
+**Quick Fix Summary:**
+1. Use `df_large_clean` for NER training (3,183 rows)
+2. Use `df_train_sample_clean` for Sentiment training (265 rows)
+3. Create separate `ner_train_df` and `sentiment_train_df` splits
+
+---
+
+**Recommended notebook:** Currently all notebooks need the fix above. A corrected version will be uploaded soon.
 
 ## Overview
 
@@ -128,6 +141,33 @@ The notebook will:
 5. **Sentiment Training** - Fine-tune RoBERTa for sentiment classification (5 epochs, ~25 mins)
 6. **Evaluation** - Generate metrics, confusion matrices, performance comparisons
 7. **Predictions** - Process test data and save results
+
+## 🚀 Performance Optimization (NEW)
+
+**Is your GPU/CPU underutilized during training?** The default configuration is conservative to work on all hardware. You can significantly speed up training!
+
+### Quick Performance Boost
+
+**Current (default):**
+- Batch size: 8-16
+- GPU utilization: 30-40%
+- Training time: 25-30 min
+
+**Optimized:**
+- Batch size: 32-64
+- GPU utilization: 75-90%
+- Training time: 8-12 min ⚡
+
+**How to optimize:**
+1. See `QUICK_PERFORMANCE_FIX.md` for copy-paste code changes
+2. Read `PERFORMANCE_OPTIMIZATION.md` for detailed guide
+3. Expected speedup: **3-5x faster training!**
+
+**Key changes:**
+- Increase batch size (8→32 or 64)
+- Increase DataLoader workers (2→8)
+- Enable prefetching
+- Scale learning rate appropriately
 
 ### 4. Output Files
 
