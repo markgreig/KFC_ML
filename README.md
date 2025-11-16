@@ -2,11 +2,24 @@
 
 This project fine-tunes deep learning models to extract competitor mentions from tweets and analyze sentiment for each competitor independently.
 
-## ⚠️ IMPORTANT: Use the Fixed Version
+## ⚠️ CRITICAL BUG ALERT
 
-**Recommended notebook:** `KFC_NER_Sentiment_FIXED.ipynb`
+**KNOWN ISSUE in `KFC_Complete_NER_Sentiment.ipynb`:**
 
-The original notebook had an issue with NER validation F1 being 0.0000. The fixed version uses a simplified, more robust approach. See `FIX_EXPLANATION.md` for details.
+The notebook has a **data assignment bug** that causes `KeyError: 'SENTIMENT'`:
+- Uses `df_large` (no sentiment labels) for sentiment model training ❌
+- Should use `df_train_sample` (has sentiment labels) for sentiment model ✅
+
+**FIX:** See `CRITICAL_BUG_FIX.md` for detailed step-by-step corrections.
+
+**Quick Fix Summary:**
+1. Use `df_large_clean` for NER training (3,183 rows)
+2. Use `df_train_sample_clean` for Sentiment training (265 rows)
+3. Create separate `ner_train_df` and `sentiment_train_df` splits
+
+---
+
+**Recommended notebook:** Currently all notebooks need the fix above. A corrected version will be uploaded soon.
 
 ## Overview
 
