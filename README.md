@@ -2,12 +2,19 @@
 
 This project fine-tunes deep learning models to extract competitor mentions from tweets and analyze sentiment for each competitor independently.
 
+## ⚠️ IMPORTANT: Use the Fixed Version
+
+**Recommended notebook:** `KFC_NER_Sentiment_FIXED.ipynb`
+
+The original notebook had an issue with NER validation F1 being 0.0000. The fixed version uses a simplified, more robust approach. See `FIX_EXPLANATION.md` for details.
+
 ## Overview
 
-The pipeline consists of two main components:
+The pipeline consists of three main components:
 
-1. **NER Model (Competitor Extraction)**: Multi-label BERT classifier that identifies which food delivery competitors are mentioned in a tweet
-2. **Sentiment Model**: Twitter-specific RoBERTa model that predicts sentiment (negative/neutral/positive) for each competitor
+1. **NER Model (Competitor Identification)**: 14-class BERT classifier that predicts which competitor a tweet is primarily about
+2. **Regex Extraction**: Pattern matching to find all competitor mentions in tweet text
+3. **Sentiment Model**: Twitter-specific RoBERTa model that predicts sentiment (negative/neutral/positive) for each competitor
 
 ## Competitors
 
@@ -29,12 +36,35 @@ The model is trained to identify 14 competitors:
 
 ## Key Features
 
-- ✅ **Multi-competitor extraction** - Identifies all competitors mentioned in a tweet
+- ✅ **Hybrid competitor extraction** - NER classifier for primary competitor + regex for all mentions
 - ✅ **Competitor-specific sentiment** - Analyzes sentiment for each competitor independently
 - ✅ **Handles complex tweets** - Tweets mentioning multiple competitors generate separate predictions
-- ✅ **Class-weighted training** - Handles imbalanced data effectively
+- ✅ **Class-weighted training** - Handles imbalanced data effectively (KFC is 79% of data)
 - ✅ **Memory optimized for Colab** - Uses gradient accumulation and mixed precision training
-- ✅ **Baseline comparison** - Includes rule-based baseline to demonstrate improvement
+- ✅ **Data validation** - Comprehensive checks at every preprocessing step
+- ✅ **Robust and debuggable** - Clear error messages and progress tracking
+
+## Notebook Versions
+
+### 1. `KFC_NER_Sentiment_FIXED.ipynb` ⭐ **RECOMMENDED**
+
+**What's different:**
+- NER uses **single-label classification** (14-class: which competitor is tweet about?)
+- Added **data validation** at every step with debugging output
+- Enhanced **regex-based extraction** for finding all competitor mentions
+- **Hybrid pipeline**: NER classifier + regex extraction = best of both worlds
+- Much simpler and more robust
+
+**Expected performance:**
+- NER Validation F1: **>0.70** ✅
+- NER Accuracy: **>0.75** ✅
+- Sentiment F1: **>0.70** ✅
+
+### 2. `KFC_Competitor_NER_Sentiment_Analysis.ipynb` ⚠️ **HAS ISSUES**
+
+Original notebook with multi-label NER approach. **Known issue:** Validation F1 stays at 0.0000 (model doesn't learn). Use the fixed version instead.
+
+See `FIX_EXPLANATION.md` for technical details on what went wrong and how it was fixed.
 
 ## Dataset Files
 
@@ -47,8 +77,8 @@ The model is trained to identify 14 competitors:
 
 ### 1. Open in Google Colab
 
-1. Upload the notebook `KFC_Competitor_NER_Sentiment_Analysis.ipynb` to Google Colab
-2. Enable GPU: Runtime → Change runtime type → Hardware accelerator → GPU (T4)
+1. Upload the notebook `KFC_NER_Sentiment_FIXED.ipynb` to Google Colab (⭐ recommended)
+2. Enable GPU: Runtime → Change runtime type → Hardware accelerator → GPU (T4 recommended)
 3. Run all cells sequentially
 
 ### 2. Upload Data Files
